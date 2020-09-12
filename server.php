@@ -7,12 +7,18 @@ $email = "";
 $password1 = "";
 $password2 = "";
 $password = "";
+$half_begin = 0;
+$half_end = 0;
 
 $errors = array();
 
 //connect to db
 $db = mysqli_connect('localhost', 'root', '', 'leave_system_db') or die("could not connect to db");
 
+//print $_SESSION
+// echo '<pre>';
+// var_dump($_SESSION);
+// echo '</pre>';
 
 //register users
 //$_POST['username'], $_POST['email'], $_POST['username'], $_POST['username']
@@ -84,6 +90,9 @@ if (isset($_POST['login_user'])) {
         $results = mysqli_query($db, $query);
 
         if (mysqli_num_rows($results) == 1) {
+            $user = mysqli_fetch_assoc($results);
+            $id = $user['id'];
+            $_SESSION['id'] = $id;
             $_SESSION['username'] = $username;
             $_SESSION['success'] = "Logged in successfully";
             header("location: index.php");
@@ -96,6 +105,32 @@ if (isset($_POST['login_user'])) {
 //logout
 if (isset($_GET['logout'])) {
     session_destroy();
+    unset($_SESSION['id']);
     unset($_SESSION['username']);
     header('location: login.php');
+}
+
+//submit leave request
+if (isset($_POST['apply'])) {
+    $start_date = $_POST['start_date'];
+    $end_date = $_POST['end_date'];
+    $note = $_POST['note'];
+    if (isset($_POST['half_begin'])) {
+        $half_begin = 1;
+    }
+    if (isset($_POST['half_end'])) {
+        $half_end = 1;
+    }
+
+    $id = $_SESSION['id'];
+
+    if ($start_date > $end_date) {
+        array_push($errors, " EndDate should be greater than StartDate ");
+    }
+    if (count($errors) == 0) {
+        $query = "INSERT INTO leaves (id, start_date, end_date, note, half_begin, half_end) VALUES ('$id', '$start_date', '$end_date', '$note', '$half_begin', '$half_end');";
+        mysqli_query($db, $query);
+        echo '<script>alert("Submit successfully!")</script>';
+        header('location: leave_list.php');
+    }
 }

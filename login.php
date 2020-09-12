@@ -10,10 +10,8 @@
 </head>
 
 <body>
-    <div class="container">
-        <div class="header">
-            <h2>Log in</h2>
-        </div>
+    <div class="header">
+        <h2>Log in</h2>
     </div>
     <form action="login.php" method="post">
         <?php include("errors.php") ?>
