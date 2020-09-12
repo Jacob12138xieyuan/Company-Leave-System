@@ -22,7 +22,7 @@ if (empty($_SESSION['username'])) {
         <h1>Employer Leave System</h1>
     </div>
 
-    <div class="content">
+    <div class="content" style="border-radius: 0px;">
         <?php if (isset($_SESSION['success'])) : ?>
 
             <div class="error success">
@@ -30,7 +30,7 @@ if (empty($_SESSION['username'])) {
                     <?php
 
                     echo $_SESSION['success'];
-                    unset($_SESSION['success']);
+                    //unset($_SESSION['success']);
 
                     ?>
                 </h3>
@@ -39,42 +39,25 @@ if (empty($_SESSION['username'])) {
         <?php endif ?>
 
         <?php if (isset($_SESSION['username'])) : ?>
-
-            <p>Welcome <strong><?php echo $_SESSION['username']; ?></strong></p>
-            <a href="leave_list.php"><button class="btn" style="float:right;"> View leave history </button></a>
-            <p><a href="index.php?logout='1'" style="color: red;">Log out</a></p>
+            <div>
+                <p style="float:left">Welcome <strong><?php echo $_SESSION['username']; ?></strong></p>
+                <p style="float:right"><a href="index.php?logout='1'" style="color: red;">Log out</a></p>
+            </div>
+            <br>
+            <br>
+            <a href="leave_list.php"><button class="btn"> View my leave history </button></a>
 
         <?php endif ?>
     </div>
-    <form method="post" action="index.php">
-        <?php include("errors.php") ?>
-        <div class="input-group">
-            <label for="start_date">Start date: </label>
-            <input type="date" name="start_date" required>
-        </div>
-        <div class="input-group">
-            <label for="end_date">End date: </label>
-            <input type="date" name="end_date" required>
-        </div>
-        <div class="input-group">
-            <label for="note">Note: </label>
-            <input type="text" name="note">
-        </div>
-        <div>
-            <br>
-            Half day on beginning day: <input type="checkbox" name="half_begin">
-        </div>
 
-        <div>
-            <br>
-            Half day on end day: <input type="checkbox" name="half_end">
-        </div>
-
-
-        <br>
-        <button type="submit" id="apply" name="apply" class="btn"> Submit new request </button>
-
-    </form>
+    <?php
+    $type = $_SESSION['user_type'];
+    if ($type == 'admin') {
+        include('admin_home.php');
+    } else {
+        include('new_request.php');
+    }
+    ?>
 
 
 </body>

@@ -94,6 +94,7 @@ if (isset($_POST['login_user'])) {
             $id = $user['id'];
             $_SESSION['id'] = $id;
             $_SESSION['username'] = $username;
+            $_SESSION['user_type'] = $user['type'];
             $_SESSION['success'] = "Logged in successfully";
             header("location: index.php");
         } else {
@@ -128,9 +129,19 @@ if (isset($_POST['apply'])) {
         array_push($errors, " EndDate should be greater than StartDate ");
     }
     if (count($errors) == 0) {
-        $query = "INSERT INTO leaves (id, start_date, end_date, note, half_begin, half_end) VALUES ('$id', '$start_date', '$end_date', '$note', '$half_begin', '$half_end');";
+        $username = $_SESSION['username'];
+        $query = "INSERT INTO leaves (id, username, start_date, end_date, note, half_begin, half_end) VALUES ('$id', '$username','$start_date', '$end_date', '$note', '$half_begin', '$half_end');";
         mysqli_query($db, $query);
         echo '<script>alert("Submit successfully!")</script>';
         header('location: leave_list.php');
     }
+}
+
+//cancel request
+if (isset($_GET['cancel'])) {
+    $leave_id = $_GET['cancel'];
+    $query = "DELETE FROM leaves WHERE leave_id='$leave_id'";
+    mysqli_query($db, $query);
+    echo '<script>alert("Cancel successfully!")</script>';
+    header('location: leave_list.php');
 }
