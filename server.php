@@ -14,6 +14,11 @@ $holidays = array('2020-01-01', '2020-04-10', '2020-05-01', '2020-05-07', '2020-
 
 $errors = array();
 
+function isWeekendHoliday($d, $holidays)
+{
+    return (date('N', strtotime($d->format("Y-m-d"))) >= 6 || in_array($d->format("Y-m-d"), $holidays));
+}
+
 //connect to db
 $db = mysqli_connect('localhost', 'root', '', 'leave_system_db') or die("could not connect to db");
 
@@ -129,10 +134,10 @@ if (isset($_POST['apply'])) {
     $date1 = strtotime($start_date);
     $date2 = strtotime($end_date_);
     $days = ($date2 - $date1) / 60 / 60 / 24; //total days include holidays
-    if ($half_begin && !(date('N', strtotime($start_date->format("Y-m-d"))) >= 6 || in_array($start_date->format("Y-m-d"), $holidays))) {
+    if ($half_begin && !isWeekendHoliday($start_date, $holidays)) {
         $days -= 0.5;
     };
-    if ($half_end && !(date('N', strtotime($end_date->format("Y-m-d"))) >= 6 || in_array($end_date->format("Y-m-d"), $holidays))) {
+    if ($half_end && !isWeekendHoliday($end_date, $holidays)) {
         $days -= 0.5;
     };
 
@@ -145,7 +150,7 @@ if (isset($_POST['apply'])) {
     //if it is weekends
     foreach ($period as $d) {
         //echo $d->format("l Y-m-d\n");
-        if (date('N', strtotime($d->format("Y-m-d"))) >= 6 || in_array($d->format("Y-m-d"), $holidays)) {
+        if (isWeekendHoliday($d, $holidays)) {
             $days -= 1;
         }
     }
@@ -212,7 +217,6 @@ if (isset($_GET['approve'])) {
     $results = mysqli_query($db, $query);
     $leave = mysqli_fetch_assoc($results);
     $query = "UPDATE users SET left_days=left_days - {$leave['days']} WHERE username='{$leave['username']}'";
-    echo $query;
     mysqli_query($db, $query);
     header('location: admin_leave_list.php');
 }
@@ -241,4 +245,33 @@ if (isset($_GET['reject'])) {
     mysqli_query($db, $query);
     echo '<script>alert("You reject this request!")</script>';
     header('location: admin_leave_list.php');
+}
+
+//add holiday
+if (isset($_POST['add_holiday'])) {
+    $holiday_name = mysqli_real_escape_string($db, $_POST['holiday_name']);
+    $holiday_date = mysqli_real_escape_string($db, $_POST['holiday_date']);
+    $day = date('l', strtotime($holiday_date));
+
+    if (empty($holiday_name)) {
+        array_push($errors, "Name is required");
+    }
+    if (empty($holiday_name)) {
+        array_push($errors, "Date is required");
+    }
+
+    if (count($errors) == 0) {
+        $query = "INSERT INTO holidays (holiday_name, holiday_date, day) VALUES ('$holiday_name','$holiday_date', '$day');";
+        mysqli_query($db, $query);
+        echo '<script>alert("Add holiday successfully!")</script>';
+        header('location: holidays.php');
+    }
+}
+
+//delete holiday
+if (isset($_GET['delete_holiday'])) {
+    $holiday_id = $_GET['delete_holiday'];
+    $query = "DELETE FROM holidays WHERE holiday_id = $holiday_id";
+    mysqli_query($db, $query);
+    header('location: holidays.php');
 }

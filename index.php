@@ -44,24 +44,26 @@ if (empty($_SESSION['username'])) {
             <br>
             <br>
             <?php
-            $query = "SELECT * FROM users WHERE username='{$_SESSION['username']}';";
-            $user = mysqli_query($db, $query);
-            $user = mysqli_fetch_assoc($user);
-            $left_days = $user['left_days'];
-            $_SESSION['left_days'] = $left_days;
-            echo "<p>You have <strong>" . $left_days . " days</strong> of leave! </p>"
+            $type = $_SESSION['user_type'];
+            if ($type == 'admin') {
+                include('admin_home.php');
+            } else {
+                $query = "SELECT * FROM users WHERE username='{$_SESSION['username']}';";
+                $user = mysqli_query($db, $query);
+                $user = mysqli_fetch_assoc($user);
+                $left_days = $user['left_days'];
+                $_SESSION['left_days'] = $left_days;
+                echo "<p>You have <strong>" . $left_days . " days</strong> of leave! </p>";
+                echo "<br>";
+                echo "<a href='leave_list.php'><button class='btn'> View my leave request </button></a>";
+            }
             ?>
-            <br>
-            <a href="leave_list.php"><button class="btn"> View my leave request </button></a>
-
         <?php endif ?>
     </div>
 
     <?php
     $type = $_SESSION['user_type'];
-    if ($type == 'admin') {
-        include('admin_home.php');
-    } else {
+    if ($type == 'normal') {
         include('new_request.php');
     }
     ?>
