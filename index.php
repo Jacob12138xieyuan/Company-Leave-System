@@ -28,10 +28,8 @@ if (empty($_SESSION['username'])) {
             <div class="error success">
                 <h3>
                     <?php
-
                     echo $_SESSION['success'];
                     //unset($_SESSION['success']);
-
                     ?>
                 </h3>
             </div>
@@ -45,7 +43,16 @@ if (empty($_SESSION['username'])) {
             </div>
             <br>
             <br>
-            <a href="leave_list.php"><button class="btn"> View my leave history </button></a>
+            <?php
+            $query = "SELECT * FROM users WHERE username='{$_SESSION['username']}';";
+            $user = mysqli_query($db, $query);
+            $user = mysqli_fetch_assoc($user);
+            $left_days = $user['left_days'];
+            $_SESSION['left_days'] = $left_days;
+            echo "<p>You still have <strong>" . $left_days . " days</strong> of leave! </p>"
+            ?>
+            <br>
+            <a href="leave_list.php"><button class="btn"> View my leave request </button></a>
 
         <?php endif ?>
     </div>

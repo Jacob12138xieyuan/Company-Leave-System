@@ -9,6 +9,7 @@ $password2 = "";
 $password = "";
 $half_begin = 0;
 $half_end = 0;
+$leave = "";
 
 $errors = array();
 
@@ -140,31 +141,31 @@ if (isset($_POST['apply'])) {
 //user cancel request
 if (isset($_GET['cancel'])) {
     $leave_id = $_GET['cancel'];
-    $query = "SELECT * FROM leaves WHERE leave_id='$leave_id';";
-    mysqli_query($db, $query);
+    $query = "SELECT * FROM leaves WHERE leave_id=$leave_id;";
+    $results = mysqli_query($db, $query);
     $leave = mysqli_fetch_assoc($results);
     //if user cancel request already approved by admin, don't delete request
-    if($leave['status'] == 'approved'){
+    if ($leave['status'] == 'approved') {
+        echo "yes";
         date_default_timezone_set('Australia/Melbourne');
         $today_date = date('Y-m-d', time());
         //user cancel request after start date
-        if($today_date > $leave['start_date']){
-            $query = "UPDATE leaves SET status='need approve again' admin_active=1 WHERE leave_id='$leave_id'";
+        if ($today_date >= $leave['start_date']) {
+            $query = "UPDATE leaves SET status='cancel after start day', admin_active=1 WHERE leave_id='$leave_id'";
             mysqli_query($db, $query);
-            echo '<script>alert("Cancel successfully!")</script>';
+            echo '<script>alert("Cancel successfully! Waiting for approval again.")</script>';
             header('location: leave_list.php');
         }
         //user cancel request before start date
-        else{
-            $query = "UPDATE leaves SET status='request cancelled' WHERE leave_id='$leave_id'";
+        else {
+            $query = "UPDATE leaves SET status='request cancelled', admin_active=0 WHERE leave_id='$leave_id'";
             mysqli_query($db, $query);
             echo '<script>alert("Cancel successfully!")</script>';
             header('location: leave_list.php');
         }
-        
     }
     //if user cancel before approve, delete request
-    else if($leave['status'] == 'created'){
+    else if ($leave['status'] == 'created') {
         $query = "DELETE FROM leaves WHERE leave_id='$leave_id'";
         mysqli_query($db, $query);
         echo '<script>alert("Cancel successfully!")</script>';
@@ -175,7 +176,7 @@ if (isset($_GET['cancel'])) {
 //admin approve
 if (isset($_GET['approve'])) {
     $leave_id = $_GET['approve'];
-    $query = "UPDATE leaves SET status='approved' admin_active=0 WHERE leave_id='$leave_id'";
+    $query = "UPDATE leaves SET status='approved', admin_active=0 WHERE leave_id='$leave_id'";
     mysqli_query($db, $query);
     echo '<script>alert("Approve successfully!")</script>';
     header('location: pending_leave_list.php');
@@ -184,7 +185,7 @@ if (isset($_GET['approve'])) {
 //admin reject
 if (isset($_GET['reject'])) {
     $leave_id = $_GET['reject'];
-    $query = "UPDATE leaves SET status='rejected' admin_active=0 WHERE leave_id='$leave_id'";
+    $query = "UPDATE leaves SET status='rejected', admin_active=0 WHERE leave_id='$leave_id'";
     mysqli_query($db, $query);
     echo '<script>alert("You reject this request!")</script>';
     header('location: pending_leave_list.php');
