@@ -71,9 +71,14 @@
             $query = "SELECT * FROM users WHERE username='{$row['username']}';";
             $user = mysqli_query($db, $query);
             $user = mysqli_fetch_assoc($user);
-            echo "<tr><td>" . $row['username'] . "</td><td style='width: 5%;'>" . $user['left_days'] . "</td><td>" . $row['start_date'] . "</td><td>" . $row['end_date'] . "</td><td>" . $row['note'] . "</td><td>", ($row['half_begin']) ? 'Yes' : 'No', "</td><td>", ($row['half_end']) ? 'Yes' : 'No', "</td><td>" . $row['days'] . "</td><td>" . $row['status']
-                . "</td><td style='width: 15%'><a onclick=\"return confirm('Are you sure to approve?')\" href='server.php?approve={$row['leave_id']}' class='btn' style='background-color: blue; text-decoration: none;'>Approve</a> 
+            if ($row['status'] == 'cancelling') { // approve cancelling after start day
+                echo "<tr><td>" . $row['username'] . "</td><td style='width: 5%;'>" . $user['left_days'] . "</td><td>" . $row['start_date'] . "</td><td>" . $row['end_date'] . "</td><td>" . $row['note'] . "</td><td>", ($row['half_begin']) ? 'Yes' : 'No', "</td><td>", ($row['half_end']) ? 'Yes' : 'No', "</td><td>" . $row['days'] . "</td><td>" . $row['status']
+                    . "</td><td style='width: 15%'><a onclick=\"return confirm('Are you sure to approve cancelling?')\" href='server.php?approve_cancel={$row['leave_id']}' class='btn' style='background-color: blue; text-decoration: none;'>Approve cancel request</a> </td></tr>";  //approve and reject botton
+            } else {
+                echo "<tr><td>" . $row['username'] . "</td><td style='width: 5%;'>" . $user['left_days'] . "</td><td>" . $row['start_date'] . "</td><td>" . $row['end_date'] . "</td><td>" . $row['note'] . "</td><td>", ($row['half_begin']) ? 'Yes' : 'No', "</td><td>", ($row['half_end']) ? 'Yes' : 'No', "</td><td>" . $row['days'] . "</td><td>" . $row['status']
+                    . "</td><td style='width: 15%'><a onclick=\"return confirm('Are you sure to approve?')\" href='server.php?approve={$row['leave_id']}' class='btn' style='background-color: blue; text-decoration: none;'>Approve</a> 
                 <a onclick=\"return confirm('Are you sure to reject?')\" href='server.php?reject={$row['leave_id']}' class='btn' style='background-color: red; text-decoration: none;'>Reject</a></td></tr>";  //approve and reject botton
+            }
         }
 
         echo "</table>"; //Close the table in HTML
@@ -92,7 +97,7 @@
             <th>Half End Day</th>
             <th>Total Days</th>
             <th>Status</th>
-            <th style="width: 15%;">Response Request</th>
+
         </tr>
 
         <?php
@@ -104,9 +109,9 @@
             $query = "SELECT * FROM users WHERE username='{$row['username']}';";
             $user = mysqli_query($db, $query);
             $user = mysqli_fetch_assoc($user);
-            echo "<tr><td>" . $row['username'] . "</td><td style='width: 5%;'>" . $user['left_days'] . "</td><td>" . $row['start_date'] . "</td><td>" . $row['end_date'] . "</td><td>" . $row['note'] . "</td><td>", ($row['half_begin']) ? 'Yes' : 'No', "</td><td>", ($row['half_end']) ? 'Yes' : 'No', "</td><td>" . $row['days'] . "</td><td>" . $row['status']
-                . "</td><td style='width: 15%'><a onclick=\"return confirm('Are you sure to approve?')\" href='server.php?approve={$row['leave_id']}' class='btn' style='background-color: blue; text-decoration: none;'>Approve</a> 
-                <a onclick=\"return confirm('Are you sure to reject?')\" href='server.php?reject={$row['leave_id']}' class='btn' style='background-color: red; text-decoration: none;'>Reject</a></td></tr>";  //approve and reject botton
+
+            echo "<tr><td>" . $row['username'] . "</td><td style='width: 5%;'>" . $user['left_days'] . "</td><td>" . $row['start_date'] . "</td><td>" . $row['end_date'] . "</td><td>" . $row['note'] . "</td><td>", ($row['half_begin']) ? 'Yes' : 'No', "</td><td>", ($row['half_end']) ? 'Yes' : 'No', "</td><td>" . $row['days'] . "</td><td>" . $row['status'] . "</td></tr>";  //approve and reject botton
+
         }
 
         echo "</table>"; //Close the table in HTML

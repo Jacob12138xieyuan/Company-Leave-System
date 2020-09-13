@@ -49,7 +49,7 @@ if (empty($_SESSION['username'])) {
             $user = mysqli_fetch_assoc($user);
             $left_days = $user['left_days'];
             $_SESSION['left_days'] = $left_days;
-            echo "<p>You still have <strong>" . $left_days . " days</strong> of leave! </p>"
+            echo "<p>You have <strong>" . $left_days . " days</strong> of leave! </p>"
             ?>
             <br>
             <a href="leave_list.php"><button class="btn"> View my leave request </button></a>

@@ -17,7 +17,7 @@
             border-collapse: collapse;
             border: 1px solid black;
             width: 80%;
-            font-size: 25px;
+            font-size: 23px;
             text-align: center;
         }
 
@@ -56,7 +56,7 @@
             <br>
             <br>
             <?php
-            echo "<p>You still have <strong>" . $_SESSION['left_days'] . " days</strong> of leave! </p>"
+            echo "<p>You have <strong>" . $_SESSION['left_days'] . " days</strong> of leave! </p>"
             ?>
 
         <?php endif ?>
@@ -69,9 +69,9 @@
             <th>Start Date</th>
             <th>End Date</th>
             <th>Note</th>
-            <th>Half Start Day</th>
-            <th>Half End Day</th>
-            <th>Total Days</th>
+            <th>Take Half Start Date</th>
+            <th>Take Half End Date</th>
+            <th>Taken Days</th>
             <th>Status</th>
             <th>Cancel Request</th>
         </tr>
@@ -100,9 +100,9 @@
             <th>Start Date</th>
             <th>End Date</th>
             <th>Note</th>
-            <th>Half Start Day</th>
-            <th>Half End Day</th>
-            <th>Total Days</th>
+            <th>Take Half Start Date</th>
+            <th>Take Half End Date</th>
+            <th>Taken Days</th>
             <th>Status</th>
             <th>Cancel Request</th>
         </tr>

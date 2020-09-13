@@ -10,6 +10,7 @@ $password = "";
 $half_begin = 0;
 $half_end = 0;
 $leave = "";
+$holidays = array('2020-01-01', '2020-04-10', '2020-05-01', '2020-05-07', '2020-05-24');
 
 $errors = array();
 
@@ -116,6 +117,7 @@ if (isset($_GET['logout'])) {
 if (isset($_POST['apply'])) {
     $start_date = $_POST['start_date'];
     $end_date = $_POST['end_date'];
+    $end_date_ = date("Y-m-d", strtotime("$end_date +1 day"));
     $note = $_POST['note'];
     if (isset($_POST['half_begin'])) {
         $half_begin = 1;
@@ -123,15 +125,30 @@ if (isset($_POST['apply'])) {
     if (isset($_POST['half_end'])) {
         $half_end = 1;
     }
+    //calculate leave days
     $date1 = strtotime($start_date);
-    $date2 = strtotime($end_date);
-    $days = ($date2 - $date1) / 60 / 60 / 24;
-    if ($half_begin) {
+    $date2 = strtotime($end_date_);
+    $days = ($date2 - $date1) / 60 / 60 / 24; //total days include holidays
+    if ($half_begin && !(date('N', strtotime($start_date->format("Y-m-d"))) >= 6 || in_array($start_date->format("Y-m-d"), $holidays))) {
         $days -= 0.5;
     };
-    if ($half_end) {
+    if ($half_end && !(date('N', strtotime($end_date->format("Y-m-d"))) >= 6 || in_array($end_date->format("Y-m-d"), $holidays))) {
         $days -= 0.5;
     };
+
+    $start_date_ = new DateTime($start_date);
+    $end_date_ = new DateTime($end_date_);
+
+    $interval = DateInterval::createFromDateString('1 day');
+    $period = new DatePeriod($start_date_, $interval, $end_date_);
+
+    //if it is weekends
+    foreach ($period as $d) {
+        //echo $d->format("l Y-m-d\n");
+        if (date('N', strtotime($d->format("Y-m-d"))) >= 6 || in_array($d->format("Y-m-d"), $holidays)) {
+            $days -= 1;
+        }
+    }
 
     $id = $_SESSION['id'];
 
@@ -160,42 +177,68 @@ if (isset($_GET['cancel'])) {
         $today_date = date('Y-m-d', time());
         //user cancel request after start date
         if ($today_date >= $leave['start_date']) {
-            $query = "UPDATE leaves SET status='cancel after start day', admin_active=1 WHERE leave_id='$leave_id'";
+            $query = "UPDATE leaves SET status='cancelling', admin_active=1 WHERE leave_id='$leave_id'";
             mysqli_query($db, $query);
             echo '<script>alert("Cancel successfully! Waiting for approval again.")</script>';
             header('location: leave_list.php');
         }
         //user cancel request before start date
         else {
-            $query = "UPDATE leaves SET status='request cancelled', admin_active=0 WHERE leave_id='$leave_id'";
+            $query = "UPDATE leaves SET status='cancelled', admin_active=0 WHERE leave_id='$leave_id'";
             mysqli_query($db, $query);
             echo '<script>alert("Cancel successfully!")</script>';
             header('location: leave_list.php');
         }
     }
-    //if user cancel before approve, delete request
+    //if user cancel before approve, set status canceled
     else if ($leave['status'] == 'created') {
-        $query = "DELETE FROM leaves WHERE leave_id='$leave_id'";
+        $query = "UPDATE leaves SET status='cancelled', admin_active=0 WHERE leave_id='$leave_id'";
         mysqli_query($db, $query);
         echo '<script>alert("Cancel successfully!")</script>';
+        header('location: leave_list.php');
+    } else {
         header('location: leave_list.php');
     }
 }
 
-//admin approve
+//admin approve new request
 if (isset($_GET['approve'])) {
     $leave_id = $_GET['approve'];
     $query = "UPDATE leaves SET status='approved', admin_active=0 WHERE leave_id='$leave_id'";
     mysqli_query($db, $query);
-    echo '<script>alert("Approve successfully!")</script>';
-    header('location: pending_leave_list.php');
+
+    //substract days from left days 
+    $query = "SELECT * FROM leaves WHERE leave_id='$leave_id'";
+    $results = mysqli_query($db, $query);
+    $leave = mysqli_fetch_assoc($results);
+    $query = "UPDATE users SET left_days=left_days - {$leave['days']} WHERE username='{$leave['username']}'";
+    echo $query;
+    mysqli_query($db, $query);
+    header('location: admin_leave_list.php');
 }
 
-//admin reject
+//admin approve cancelling after start day
+if (isset($_GET['approve_cancel'])) {
+    $leave_id = $_GET['approve_cancel'];
+    $query = "UPDATE leaves SET status='cancelled', admin_active=0 WHERE leave_id='$leave_id'";
+    mysqli_query($db, $query);
+    echo '<script>alert("Approve cancelling successfully!")</script>';
+
+    //add days back to left days 
+    $query = "SELECT * FROM leaves WHERE leave_id='$leave_id'";
+    $results = mysqli_query($db, $query);
+    $leave = mysqli_fetch_assoc($results);
+    $query = "UPDATE users SET left_days=left_days + {$leave['days']} WHERE username='{$leave['username']}'";
+    echo $query;
+    mysqli_query($db, $query);
+    header('location: admin_leave_list.php');
+}
+
+//admin reject new request
 if (isset($_GET['reject'])) {
     $leave_id = $_GET['reject'];
     $query = "UPDATE leaves SET status='rejected', admin_active=0 WHERE leave_id='$leave_id'";
     mysqli_query($db, $query);
     echo '<script>alert("You reject this request!")</script>';
-    header('location: pending_leave_list.php');
+    header('location: admin_leave_list.php');
 }
