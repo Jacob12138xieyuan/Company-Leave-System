@@ -25,5 +25,5 @@
 
 
     <br>
-    <button type="submit" id="apply" name="apply" class="btn"> Submit request </button>
+    <button onclick="return confirm('Are you sure to submit?')" type="submit" id="apply" name="apply" class="btn"> Submit request </button>
 </form>

@@ -123,6 +123,15 @@ if (isset($_POST['apply'])) {
     if (isset($_POST['half_end'])) {
         $half_end = 1;
     }
+    $date1 = strtotime($start_date);
+    $date2 = strtotime($end_date);
+    $days = ($date2 - $date1) / 60 / 60 / 24;
+    if ($half_begin) {
+        $days -= 0.5;
+    };
+    if ($half_end) {
+        $days -= 0.5;
+    };
 
     $id = $_SESSION['id'];
 
@@ -131,7 +140,7 @@ if (isset($_POST['apply'])) {
     }
     if (count($errors) == 0) {
         $username = $_SESSION['username'];
-        $query = "INSERT INTO leaves (id, username, start_date, end_date, note, half_begin, half_end) VALUES ('$id', '$username','$start_date', '$end_date', '$note', '$half_begin', '$half_end');";
+        $query = "INSERT INTO leaves (id, username, start_date, end_date, note, half_begin, half_end, days) VALUES ('$id', '$username','$start_date', '$end_date', '$note', '$half_begin', '$half_end', '$days');";
         mysqli_query($db, $query);
         echo '<script>alert("Submit successfully!")</script>';
         header('location: leave_list.php');
