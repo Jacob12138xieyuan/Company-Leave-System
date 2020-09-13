@@ -10,14 +10,14 @@ $password = "";
 $half_begin = 0;
 $half_end = 0;
 $leave = "";
-$holidays = array('2020-01-01', '2020-04-10', '2020-05-01', '2020-05-07', '2020-05-24');
+$holidays = array();
+
+function isWeekendHoliday($date, $holidays)
+{
+    return (date('N', strtotime($date)) >= 6 || in_array($date, $holidays));
+}
 
 $errors = array();
-
-function isWeekendHoliday($d, $holidays)
-{
-    return (date('N', strtotime($d->format("Y-m-d"))) >= 6 || in_array($d->format("Y-m-d"), $holidays));
-}
 
 //connect to db
 $db = mysqli_connect('localhost', 'root', '', 'leave_system_db') or die("could not connect to db");
@@ -120,6 +120,12 @@ if (isset($_GET['logout'])) {
 
 //submit leave request
 if (isset($_POST['apply'])) {
+    //get holidays array
+    $query = "SELECT * FROM holidays ORDER BY holiday_date;";
+    $results = mysqli_query($db, $query);
+    $holidays = mysqli_fetch_assoc($results);
+
+    //get from data
     $start_date = $_POST['start_date'];
     $end_date = $_POST['end_date'];
     $end_date_ = date("Y-m-d", strtotime("$end_date +1 day"));
@@ -150,13 +156,14 @@ if (isset($_POST['apply'])) {
     //if it is weekends
     foreach ($period as $d) {
         //echo $d->format("l Y-m-d\n");
-        if (isWeekendHoliday($d, $holidays)) {
+        if (date('N', strtotime($d->format("Y-m-d"))) >= 6 || in_array($d->format("Y-m-d"), $holidays)) {
             $days -= 1;
         }
     }
 
     $id = $_SESSION['id'];
 
+    //date validation
     if ($start_date > $end_date) {
         array_push($errors, " EndDate should be greater than StartDate ");
     }
