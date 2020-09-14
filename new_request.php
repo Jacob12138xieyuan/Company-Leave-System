@@ -2,6 +2,7 @@
     <h2>Create New Leave Request</h2>
     <?php include("errors.php") ?>
     <div class="input-group">
+        <label for="start_date">(Holidays are highlighted)</label>
         <?php include('calendar.php') ?>
         <label for="start_date">Start date: </label>
         <input type="text" placeholder="MM/DD/YYYY" id="start_date" name="start_date" required>

@@ -22,7 +22,7 @@ $leave_date = date('Y-m-d', time()); //default today
             text-align: center;
         }
 
-        th {
+        .th {
             width: 20%;
             background-color: #5f9ea0;
             color: white;
@@ -66,8 +66,9 @@ $leave_date = date('Y-m-d', time()); //default today
 
         <div class="input-group">
             <?php include('calendar.php') ?>
+            <label for="leave_date">(Holidays are highlighted)</label>
             <label for="leave_date">Select date: </label>
-            <input type="text" placeholder="MM/DD/YYYY" id="leave_date" name="leave_date" required>
+            <input class="remove-all-styles" type="text" placeholder="MM/DD/YYYY" id="leave_date" name="leave_date" required>
             <br>
             <br>
             <button type="submit" id="calendar" name="calendar" class="btn" style='font-size: 15px; float:right'> Submit date </button>
@@ -81,10 +82,10 @@ $leave_date = date('Y-m-d', time()); //default today
     <h2 style="text-align: center;">Employees leave on date<?php echo "<strong>" . $leave_date . "</strong>"; ?></h2>
     <table style="margin-top: 25px;">
         <tr>
-            <th>Employee Id</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Left Annual Leave</th>
+            <th class="th">Employee Id</th>
+            <th class="th">Name</th>
+            <th class="th">Email</th>
+            <th class="th">Left Annual Leave</th>
         </tr>
 
         <?php
