@@ -58,6 +58,7 @@ if (empty($_SESSION['username'])) {
                 echo "<p>You have <strong>" . $left_days . " days</strong> of annual leave <strong>left</strong>! </p>";
                 echo "<br>";
                 echo "<a href='leave_list.php'><button class='btn' style='font-size: 20px'><i class='fa fa-bars'></i> View my leave request </button></a>";
+                echo "<a href='company_calendar.php'><button class='btn' style='font-size: 20px; float: right'><i class='fa fa-calendar'></i> Company Calendar </button></a><br>";
             }
             ?>
         <?php endif ?>

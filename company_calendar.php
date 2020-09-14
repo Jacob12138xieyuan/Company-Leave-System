@@ -76,8 +76,9 @@ $leave_date = date('Y-m-d', time()); //default today
 
         <br>
     </form>
-
-
+    <br>
+    <br>
+    <h2 style="text-align: center;">Employees leave on date<?php echo "<strong>" . $leave_date . "</strong>"; ?></h2>
     <table style="margin-top: 25px;">
         <tr>
             <th>Employee Id</th>
