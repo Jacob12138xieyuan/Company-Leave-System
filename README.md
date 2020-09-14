@@ -68,7 +68,7 @@ https://www.wampserver.com/en/
 For example: E:\wamp64\www\company-leave-system
 
 ### 3. Import data into 'phpmyadmin' 
-Go to 'http://localhost/phpmyadmin/', username is 'root', password is empty. On the right side create new database name as 'leave_system-db', and import data by selecting 'database/leave_system_db' file in 'company-leave-system' folder. You should see blow:
+Go to 'http://localhost/phpmyadmin/', username is 'root', password is empty. On the left side create new database name as 'leave_system_db', and import data by selecting 'database/leave_system_db' file in 'company-leave-system' folder. You should see blow:
 
 ![2](https://user-images.githubusercontent.com/37478093/93093580-6d451e00-f6d3-11ea-966e-24863a177de6.png)
 ![3](https://user-images.githubusercontent.com/37478093/93093581-6d451e00-f6d3-11ea-8ca0-e630ba1d4b1c.png)
