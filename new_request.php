@@ -2,12 +2,14 @@
     <h2>Create New Leave Request</h2>
     <?php include("errors.php") ?>
     <div class="input-group">
+        <?php include('calendar.php') ?>
         <label for="start_date">Start date: </label>
-        <input type="date" name="start_date" required>
+        <input type="text" id="start_date" name="start_date" required>
     </div>
     <div class="input-group">
+        <?php include('calendar.php') ?>
         <label for="end_date">End date: </label>
-        <input type="date" name="end_date" required>
+        <input type="text" id="end_date" name="end_date" required>
     </div>
     <div class="input-group">
         <label for="note">Note: </label>

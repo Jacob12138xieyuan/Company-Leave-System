@@ -136,8 +136,14 @@ if (isset($_POST['apply'])) {
     }
 
     //get form data
-    $start_date = $_POST['start_date'];
+    $start_date = $_POST['start_date']; //'09/14/2020'
+    $start_date_array = explode("/", $start_date);
+    $start_date = $start_date_array[2] . "-" . $start_date_array[0] . "-" . $start_date_array[1];
+
     $end_date = $_POST['end_date'];
+    $end_date_array = explode("/", $end_date);
+    $end_date = $end_date_array[2] . "-" . $end_date_array[0] . "-" . $end_date_array[1];
+
     $end_date_ = date("Y-m-d", strtotime("$end_date +1 day"));
     $note = $_POST['note'];
     if (isset($_POST['half_begin'])) {
@@ -180,6 +186,7 @@ if (isset($_POST['apply'])) {
     if (count($errors) == 0) {
         $username = $_SESSION['username'];
         $query = "INSERT INTO leaves (id, username, start_date, end_date, note, half_begin, half_end, days) VALUES ('$id', '$username','$start_date', '$end_date', '$note', '$half_begin', '$half_end', '$days');";
+
         mysqli_query($db, $query);
 
         //substract days from left days 
