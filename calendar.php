@@ -2,14 +2,30 @@
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
 
+
 <script type="text/javascript">
-    var holiDays = [
-        [2020, 05, 01, 'Maharashtra Day'],
-        [2020, 08, 15, 'Independence Day'],
-        [2020, 08, 28, 'JANMASHTAMI'],
-        [2020, 09, 09, 'GANESH CHATURTHI'],
-        [2020, 10, 02, 'GANDHI JAYNTI']
-    ];
+    <?php
+    //get holidays from database, convert to js array
+    $db = mysqli_connect('localhost', 'root', '', 'leave_system_db') or die("could not connect to db");
+    $query = "SELECT * FROM holidays ORDER BY holiday_date;";
+    $results = mysqli_query($db, $query);
+    $holidays = array();
+    while ($row = mysqli_fetch_array($results)) {   //Creates a loop to loop through results
+        $date_explode = explode("-", $row['holiday_date']);
+        $holidays[] = [$date_explode[0], $date_explode[1], $date_explode[2], $row['holiday_name']];
+    }
+    $holiDays = json_encode($holidays);
+    echo "var holiDays = " . $holiDays . ";\n";
+    ?>
+
+    // var holiDays = [
+    //     ["2020", "01", "01", "New Year's Day"],
+    //     ["2020", "04", "10", "Good Friday"],
+    //     ["2020", "05", "01", "Labour Day"],
+    //     ["2020", "05", "07", "Vesak Day"],
+    //     ["2020", "05", "24", "Hari Raya Puasa"]
+    // ];
+
     $(function() {
         $("#start_date").datepicker({
             beforeShowDay: setHoliDays

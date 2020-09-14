@@ -312,4 +312,6 @@ if (isset($_GET['delete_holiday'])) {
     header('location: holidays.php');
 }
 
+
+
 ?>
