@@ -14,7 +14,6 @@ if (empty($_SESSION['username'])) {
 <head>
     <meta charset="UTF-8">
     <title>Employer Leave System</title>
-    <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 
 <body>
@@ -52,10 +51,13 @@ if (empty($_SESSION['username'])) {
                 $user = mysqli_query($db, $query);
                 $user = mysqli_fetch_assoc($user);
                 $left_days = $user['left_days'];
+                $taken_days = 15 - $left_days;
                 $_SESSION['left_days'] = $left_days;
-                echo "<p>You have <strong>" . $left_days . " days</strong> of leave! </p>";
+                echo "<p>You have taken <strong>" . $taken_days . " days</strong> of annual leave! </p>";
                 echo "<br>";
-                echo "<a href='leave_list.php'><button class='btn'> View my leave request </button></a>";
+                echo "<p>You have <strong>" . $left_days . " days</strong> of annual leave <strong>left</strong>! </p>";
+                echo "<br>";
+                echo "<a href='leave_list.php'><button class='btn' style='font-size: 20px'><i class='fa fa-bars'></i> View my leave request </button></a>";
             }
             ?>
         <?php endif ?>
@@ -68,7 +70,8 @@ if (empty($_SESSION['username'])) {
     }
     ?>
 
-
+    <br>
+    <br>
 </body>
 
 </html>

@@ -42,7 +42,7 @@
 </head>
 
 <body>
-    <a href="index.php"><button name="back" class="btn" style="margin-top: 20px; margin-left: 50px"> Back </button></a>
+    <a href="index.php"><button name="back" class="btn" style="margin-top: 20px; margin-left: 50px"><i class="fa fa-angle-left"></i> Back </button></a>
     <div class="header">
         <h2>My Leave History</h2>
     </div>
@@ -56,7 +56,9 @@
             <br>
             <br>
             <?php
-            echo "<p>You have <strong>" . $_SESSION['left_days'] . " days</strong> of leave! </p>"
+            echo "<p>You have taken <strong>" . (15 - $_SESSION['left_days']) . " days</strong> of annual leave! </p>";
+            echo "<br>";
+            echo "<p>You have <strong>" . $_SESSION['left_days'] . " days</strong> of annual leave <strong>left</strong>! </p>"
             ?>
 
         <?php endif ?>
@@ -86,7 +88,7 @@
 
         while ($row = mysqli_fetch_array($result)) {   //Creates a loop to loop through results
             echo "<tr><td>" . $row['username'] . "</td><td>" . $row['start_date'] . "</td><td>" . $row['end_date'] . "</td><td>" . $row['note'] . "</td><td>", ($row['half_begin']) ? 'Yes' : 'No', "</td><td>", ($row['half_end']) ? 'Yes' : 'No', "</td><td>" . $row['days'] . "</td><td>" . $row['status']
-                . "</td><td><a onclick=\"return confirm('Are you sure to cancel?')\" href='server.php?cancel={$row['leave_id']}' class='btn' style='background-color: red; text-decoration: none;'>Cancel</a></td></tr>";  //$row['index'] the index here is a field name
+                . "</td><td><a onclick=\"return confirm('Are you sure to cancel?')\" href='server.php?cancel={$row['leave_id']}' class='btn' style='background-color: red; text-decoration: none;'><i class='fa fa-close'></i> Cancel</a></td></tr>";  //$row['index'] the index here is a field name
         }
 
         echo "</table>"; //Close the table in HTML
@@ -116,7 +118,7 @@
 
         while ($row = mysqli_fetch_array($result)) {   //Creates a loop to loop through results
             echo "<tr><td>" . $row['username'] . "</td><td>" . $row['start_date'] . "</td><td>" . $row['end_date'] . "</td><td>" . $row['note'] . "</td><td>", ($row['half_begin']) ? 'Yes' : 'No', "</td><td>", ($row['half_end']) ? 'Yes' : 'No', "</td><td>" . $row['days'] . "</td><td>" . $row['status']
-                . "</td><td><a onclick=\"return confirm('Are you sure to cancel?')\" href='server.php?cancel={$row['leave_id']}' class='btn' style='background-color: red; text-decoration: none;'>Cancel</a></td></tr>";  //$row['index'] the index here is a field name
+                . "</td><td><a onclick=\"return confirm('Are you sure to cancel?')\" href='server.php?cancel={$row['leave_id']}' class='btn' style='background-color: red; text-decoration: none;'><i class='fa fa-close'></i> Cancel</a></td></tr>";  //$row['index'] the index here is a field name
         }
 
         echo "</table>"; //Close the table in HTML

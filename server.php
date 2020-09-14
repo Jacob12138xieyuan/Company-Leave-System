@@ -1,3 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <!-- Add icon library -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+</head>
+
+</html>
+
 <?php
 session_start();
 
@@ -10,12 +23,6 @@ $password = "";
 $half_begin = 0;
 $half_end = 0;
 $leave = "";
-$holidays = array();
-
-function isWeekendHoliday($date, $holidays)
-{
-    return (date('N', strtotime($date)) >= 6 || in_array($date, $holidays));
-}
 
 $errors = array();
 
@@ -121,11 +128,14 @@ if (isset($_GET['logout'])) {
 //submit leave request
 if (isset($_POST['apply'])) {
     //get holidays array
-    $query = "SELECT * FROM holidays ORDER BY holiday_date;";
+    $query = "SELECT holiday_date FROM holidays ORDER BY holiday_date;";
     $results = mysqli_query($db, $query);
-    $holidays = mysqli_fetch_assoc($results);
+    $holidays = array();
+    while ($row = mysqli_fetch_array($results)) {   //Creates a loop to loop through results
+        $holidays[] = $row['holiday_date'];
+    }
 
-    //get from data
+    //get form data
     $start_date = $_POST['start_date'];
     $end_date = $_POST['end_date'];
     $end_date_ = date("Y-m-d", strtotime("$end_date +1 day"));
@@ -140,10 +150,10 @@ if (isset($_POST['apply'])) {
     $date1 = strtotime($start_date);
     $date2 = strtotime($end_date_);
     $days = ($date2 - $date1) / 60 / 60 / 24; //total days include holidays
-    if ($half_begin && !isWeekendHoliday($start_date, $holidays)) {
+    if ($half_begin && !(date('N', strtotime($start_date)) >= 6 || in_array($start_date, $holidays))) {
         $days -= 0.5;
     };
-    if ($half_end && !isWeekendHoliday($end_date, $holidays)) {
+    if ($half_end && !(date('N', strtotime($end_date)) >= 6 || in_array($end_date, $holidays))) {
         $days -= 0.5;
     };
 
@@ -171,7 +181,11 @@ if (isset($_POST['apply'])) {
         $username = $_SESSION['username'];
         $query = "INSERT INTO leaves (id, username, start_date, end_date, note, half_begin, half_end, days) VALUES ('$id', '$username','$start_date', '$end_date', '$note', '$half_begin', '$half_end', '$days');";
         mysqli_query($db, $query);
-        echo '<script>alert("Submit successfully!")</script>';
+
+        //substract days from left days 
+        $query = "UPDATE users SET left_days=left_days - {$days} WHERE username='{$username}'";
+        mysqli_query($db, $query);
+
         header('location: leave_list.php');
     }
 }
@@ -199,6 +213,14 @@ if (isset($_GET['cancel'])) {
             $query = "UPDATE leaves SET status='cancelled', admin_active=0 WHERE leave_id='$leave_id'";
             mysqli_query($db, $query);
             echo '<script>alert("Cancel successfully!")</script>';
+
+            //add days back to left days 
+            $query = "SELECT * FROM leaves WHERE leave_id='$leave_id'";
+            $results = mysqli_query($db, $query);
+            $leave = mysqli_fetch_assoc($results);
+            $query = "UPDATE users SET left_days=left_days + {$leave['days']} WHERE username='{$leave['username']}'";
+            mysqli_query($db, $query);
+
             header('location: leave_list.php');
         }
     }
@@ -206,7 +228,14 @@ if (isset($_GET['cancel'])) {
     else if ($leave['status'] == 'created') {
         $query = "UPDATE leaves SET status='cancelled', admin_active=0 WHERE leave_id='$leave_id'";
         mysqli_query($db, $query);
-        echo '<script>alert("Cancel successfully!")</script>';
+
+        //add days back to left days 
+        $query = "SELECT * FROM leaves WHERE leave_id='$leave_id'";
+        $results = mysqli_query($db, $query);
+        $leave = mysqli_fetch_assoc($results);
+        $query = "UPDATE users SET left_days=left_days + {$leave['days']} WHERE username='{$leave['username']}'";
+        mysqli_query($db, $query);
+        $_SESSION['left_days'] += $leave['days'];
         header('location: leave_list.php');
     } else {
         header('location: leave_list.php');
@@ -217,13 +246,6 @@ if (isset($_GET['cancel'])) {
 if (isset($_GET['approve'])) {
     $leave_id = $_GET['approve'];
     $query = "UPDATE leaves SET status='approved', admin_active=0 WHERE leave_id='$leave_id'";
-    mysqli_query($db, $query);
-
-    //substract days from left days 
-    $query = "SELECT * FROM leaves WHERE leave_id='$leave_id'";
-    $results = mysqli_query($db, $query);
-    $leave = mysqli_fetch_assoc($results);
-    $query = "UPDATE users SET left_days=left_days - {$leave['days']} WHERE username='{$leave['username']}'";
     mysqli_query($db, $query);
     header('location: admin_leave_list.php');
 }
@@ -240,8 +262,8 @@ if (isset($_GET['approve_cancel'])) {
     $results = mysqli_query($db, $query);
     $leave = mysqli_fetch_assoc($results);
     $query = "UPDATE users SET left_days=left_days + {$leave['days']} WHERE username='{$leave['username']}'";
-    echo $query;
     mysqli_query($db, $query);
+    $_SESSION['left_days'] += $leave['days'];
     header('location: admin_leave_list.php');
 }
 
@@ -261,10 +283,10 @@ if (isset($_POST['add_holiday'])) {
     $day = date('l', strtotime($holiday_date));
 
     if (empty($holiday_name)) {
-        array_push($errors, "Name is required");
+        array_push($errors, "Holiday name is required");
     }
     if (empty($holiday_name)) {
-        array_push($errors, "Date is required");
+        array_push($errors, "Holiday date is required");
     }
 
     if (count($errors) == 0) {
@@ -282,3 +304,5 @@ if (isset($_GET['delete_holiday'])) {
     mysqli_query($db, $query);
     header('location: holidays.php');
 }
+
+?>

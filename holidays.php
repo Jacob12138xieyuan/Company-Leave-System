@@ -6,7 +6,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Mangage holidays</title>
-    <link rel="stylesheet" type="text/css" href="style.css">
     <style>
         * {
             box-sizing: border-box;
@@ -66,13 +65,15 @@
 </head>
 
 <body>
-    <a href="index.php"><button name="back" class="btn" style="margin-top: 20px; margin-left: 50px"> Back </button></a>
+    <a href="index.php"><button name="back" class="btn" style="margin-top: 20px; margin-left: 50px"><i class="fa fa-angle-left"></i> Back </button></a>
     <div class="header" style="border-radius: 10px;">
         <h2>Manage Holidays</h2>
     </div>
 
+    <h3 style="text-align: center; margin-top: 30px">Today is: <?php echo $today_date = date('Y-m-d', time()); ?></h3>
 
-    <div style="margin: 50px;">
+
+    <div style="margin: 40px;">
         <div class="menu">
             <br>
             <h2>Add New Holiday</h2>
@@ -106,11 +107,11 @@
 
                 <?php
                 $query = "SELECT * FROM holidays ORDER BY holiday_date;";
-                $result = mysqli_query($db, $query);
+                $results = mysqli_query($db, $query);
                 echo "<table>"; // start a table tag in the HTML
 
-                while ($row = mysqli_fetch_array($result)) {   //Creates a loop to loop through results
-                    echo "<tr><td>" . $row['holiday_name'] . "</td><td>" . $row['holiday_date'] . "</td><td>" . $row['day'] . "</td><td><a onclick=\"return confirm('Are you sure to delete holiday?')\" href='server.php?delete_holiday={$row['holiday_id']}' class='btn' style='background-color: red; text-decoration: none;'>Delete</a></td></tr>";  //delete botton    
+                while ($row = mysqli_fetch_array($results)) {   //Creates a loop to loop through results
+                    echo "<tr><td>" . $row['holiday_name'] . "</td><td>" . $row['holiday_date'] . "</td><td>" . $row['day'] . "</td><td><a onclick=\"return confirm('Are you sure to delete holiday?')\" href='server.php?delete_holiday={$row['holiday_id']}' class='btn' style='background-color: red; text-decoration: none;'><i class='fa fa-trash'></i> Delete</a></td></tr>";  //delete botton    
                 }
 
                 echo "</table>"; //Close the table in HTML
