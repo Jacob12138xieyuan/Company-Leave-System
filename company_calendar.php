@@ -68,7 +68,7 @@ $leave_date = date('Y-m-d', time()); //default today
             <?php include('calendar.php') ?>
             <label for="leave_date">(Holidays are highlighted)</label>
             <label for="leave_date">Select date: </label>
-            <input class="remove-all-styles" type="text" placeholder="MM/DD/YYYY" id="leave_date" name="leave_date" required>
+            <input type="text" placeholder="MM/DD/YYYY" id="leave_date" name="leave_date" required>
             <br>
             <br>
             <button type="submit" id="calendar" name="calendar" class="btn" style='font-size: 15px; float:right'> Submit date </button>
