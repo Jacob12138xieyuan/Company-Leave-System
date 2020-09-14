@@ -309,6 +309,24 @@ if (isset($_GET['delete_holiday'])) {
     header('location: holidays.php');
 }
 
+//admin delete leave year
+if (isset($_GET['delete_leave_year'])) {
+    $year = $_GET['delete_leave_year'];
+    $query = "DELETE FROM leave_year WHERE year = $year";
+    mysqli_query($db, $query);
+    header('location: set_leave_days.php');
+}
 
+//admin add/edit leave year
+if (isset($_POST['add_leave_year'])) {
+    $year = mysqli_real_escape_string($db, $_POST['year']);
+    $annual_leave = mysqli_real_escape_string($db, $_POST['annual_leave']);
+    $medical_leave = mysqli_real_escape_string($db, $_POST['medical_leave']);
+
+    $query = "INSERT INTO leave_year (year, annual_leave, medical_leave) VALUES ('$year','$annual_leave', '$medical_leave') 
+    ON DUPLICATE KEY UPDATE year=$year, annual_leave=$annual_leave, medical_leave=$medical_leave;";
+    mysqli_query($db, $query);
+    header('location: set_leave_days.php');
+}
 
 ?>
