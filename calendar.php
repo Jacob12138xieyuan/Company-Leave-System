@@ -33,6 +33,9 @@
         $("#end_date").datepicker({
             beforeShowDay: setHoliDays
         });
+        $("#leave_date").datepicker({
+            beforeShowDay: setHoliDays
+        });
 
         // set holidays function which is configured in beforeShowDay
         function setHoliDays(date) {

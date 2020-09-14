@@ -21,7 +21,7 @@ if (empty($_SESSION['username'])) {
         <h1>Employer Leave System</h1>
     </div>
 
-    <div class="content" style="border-radius: 0px;">
+    <div class="content" style="border-radius: 0px 0px 10px 10px;">
         <?php if (isset($_SESSION['success'])) : ?>
 
             <div class="error success">
