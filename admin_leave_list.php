@@ -1,3 +1,5 @@
+<!-- admin view all leave request history of all users -->
+
 <?php include('server.php'); ?>
 
 <!DOCTYPE html>

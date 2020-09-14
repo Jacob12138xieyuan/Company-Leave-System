@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
+<!-- Handle most backend request -->
 
 <head>
     <meta charset="UTF-8">
@@ -9,7 +8,6 @@
 
 </head>
 
-</html>
 
 <?php
 session_start();
@@ -29,14 +27,10 @@ $errors = array();
 //connect to db
 $db = mysqli_connect('localhost', 'root', '', 'leave_system_db') or die("could not connect to db");
 
-//print $_SESSION
-// echo '<pre>';
-// var_dump($_SESSION);
-// echo '</pre>';
-
-//register users
+//register new users
 //$_POST['username'], $_POST['email'], $_POST['username'], $_POST['username']
 if (isset($_POST['register_user'])) {
+    //get data from register form
     $username = mysqli_real_escape_string($db, $_POST['username']);
     $email = mysqli_real_escape_string($db, $_POST['email']);
     $password1 = mysqli_real_escape_string($db, $_POST['password1']);
@@ -77,8 +71,6 @@ if (isset($_POST['register_user'])) {
         $query = "INSERT INTO users (username, email, password) VALUES ('$username', '$email', '$password')";
 
         mysqli_query($db, $query);
-        $_SESSION['usename'] = $username;
-        $_SESSION['success'] = "You are logged in";
 
         header('location: index.php');
     }
@@ -103,6 +95,7 @@ if (isset($_POST['login_user'])) {
         $query = "SELECT * FROM users WHERE username='$username' AND password='$password';";
         $results = mysqli_query($db, $query);
 
+        //if username and password matches
         if (mysqli_num_rows($results) == 1) {
             $user = mysqli_fetch_assoc($results);
             $id = $user['id'];
@@ -117,7 +110,7 @@ if (isset($_POST['login_user'])) {
     }
 }
 
-//logout
+//user logout
 if (isset($_GET['logout'])) {
     session_destroy();
     unset($_SESSION['id']);
@@ -125,7 +118,7 @@ if (isset($_GET['logout'])) {
     header('location: login.php');
 }
 
-//submit leave request
+//user submit new leave request
 if (isset($_POST['apply'])) {
     //get holidays array
     $query = "SELECT holiday_date FROM holidays ORDER BY holiday_date;";
@@ -138,12 +131,13 @@ if (isset($_POST['apply'])) {
     //get form data
     $start_date = $_POST['start_date']; //'09/14/2020'
     $start_date_array = explode("/", $start_date);
-    $start_date = $start_date_array[2] . "-" . $start_date_array[0] . "-" . $start_date_array[1];
+    $start_date = $start_date_array[2] . "-" . $start_date_array[0] . "-" . $start_date_array[1]; //'2020-09-14'
 
     $end_date = $_POST['end_date'];
     $end_date_array = explode("/", $end_date);
     $end_date = $end_date_array[2] . "-" . $end_date_array[0] . "-" . $end_date_array[1];
 
+    //add one day since include the last day
     $end_date_ = date("Y-m-d", strtotime("$end_date +1 day"));
     $note = $_POST['note'];
     if (isset($_POST['half_begin'])) {
@@ -152,13 +146,15 @@ if (isset($_POST['apply'])) {
     if (isset($_POST['half_end'])) {
         $half_end = 1;
     }
-    //calculate leave days
+    //calculate taken leave days
     $date1 = strtotime($start_date);
     $date2 = strtotime($end_date_);
-    $days = ($date2 - $date1) / 60 / 60 / 24; //total days include holidays
+    $days = ($date2 - $date1) / 60 / 60 / 24; //total days include holidays and weekends
+    //if first day half day and first day is not holiday
     if ($half_begin && !(date('N', strtotime($start_date)) >= 6 || in_array($start_date, $holidays))) {
         $days -= 0.5;
     };
+    //if last day half day and last day is not holiday
     if ($half_end && !(date('N', strtotime($end_date)) >= 6 || in_array($end_date, $holidays))) {
         $days -= 0.5;
     };
@@ -166,10 +162,11 @@ if (isset($_POST['apply'])) {
     $start_date_ = new DateTime($start_date);
     $end_date_ = new DateTime($end_date_);
 
+    //iterrate every day to check if it is holiday or weekends
     $interval = DateInterval::createFromDateString('1 day');
     $period = new DatePeriod($start_date_, $interval, $end_date_);
 
-    //if it is weekends
+    //if it is holiday or weekends
     foreach ($period as $d) {
         //echo $d->format("l Y-m-d\n");
         if (date('N', strtotime($d->format("Y-m-d"))) >= 6 || in_array($d->format("Y-m-d"), $holidays)) {
@@ -189,7 +186,7 @@ if (isset($_POST['apply'])) {
 
         mysqli_query($db, $query);
 
-        //substract days from left days 
+        //substract days from left leave days 
         $query = "UPDATE users SET left_days=left_days - {$days} WHERE username='{$username}'";
         mysqli_query($db, $query);
 
@@ -203,12 +200,12 @@ if (isset($_GET['cancel'])) {
     $query = "SELECT * FROM leaves WHERE leave_id=$leave_id;";
     $results = mysqli_query($db, $query);
     $leave = mysqli_fetch_assoc($results);
-    //if user cancel request already approved by admin, don't delete request
+    //if user cancel request already approved by admin
     if ($leave['status'] == 'approved') {
         echo "yes";
         date_default_timezone_set('Australia/Melbourne');
         $today_date = date('Y-m-d', time());
-        //user cancel request after start date
+        //user cancel request after start date, cancelling needs to be approved
         if ($today_date >= $leave['start_date']) {
             $query = "UPDATE leaves SET status='cancelling', admin_active=1 WHERE leave_id='$leave_id'";
             mysqli_query($db, $query);
@@ -231,12 +228,12 @@ if (isset($_GET['cancel'])) {
             header('location: leave_list.php');
         }
     }
-    //if user cancel before approve, set status canceled
+    //if user cancel before approve, set status cancelled
     else if ($leave['status'] == 'created') {
         $query = "UPDATE leaves SET status='cancelled', admin_active=0 WHERE leave_id='$leave_id'";
         mysqli_query($db, $query);
 
-        //add days back to left days 
+        //add days back to left leave days 
         $query = "SELECT * FROM leaves WHERE leave_id='$leave_id'";
         $results = mysqli_query($db, $query);
         $leave = mysqli_fetch_assoc($results);
@@ -283,7 +280,7 @@ if (isset($_GET['reject'])) {
     header('location: admin_leave_list.php');
 }
 
-//add holiday
+//admin add holiday
 if (isset($_POST['add_holiday'])) {
     $holiday_name = mysqli_real_escape_string($db, $_POST['holiday_name']);
     $holiday_date = mysqli_real_escape_string($db, $_POST['holiday_date']);
@@ -304,7 +301,7 @@ if (isset($_POST['add_holiday'])) {
     }
 }
 
-//delete holiday
+//admin delete holiday
 if (isset($_GET['delete_holiday'])) {
     $holiday_id = $_GET['delete_holiday'];
     $query = "DELETE FROM holidays WHERE holiday_id = $holiday_id";

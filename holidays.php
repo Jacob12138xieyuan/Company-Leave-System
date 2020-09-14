@@ -1,3 +1,5 @@
+<!-- admin add/delete holidays of the company -->
+
 <?php include('server.php'); ?>
 
 <!DOCTYPE html>
@@ -78,6 +80,7 @@
             <br>
             <h2>Add New Holiday</h2>
             <br>
+            <!-- add new holiday -->
             <form action="" method="post">
                 <?php include("errors.php") ?>
                 <div class="input-group">

@@ -1,3 +1,4 @@
+<!-- form of new leave request submission -->
 <form method="post" action="index.php">
     <h2>Create New Leave Request</h2>
     <?php include("errors.php") ?>

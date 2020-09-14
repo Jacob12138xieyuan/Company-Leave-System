@@ -1,3 +1,5 @@
+<!-- admin view all employee information -->
+
 <?php include('server.php'); ?>
 
 <!DOCTYPE html>

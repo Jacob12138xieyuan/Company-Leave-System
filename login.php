@@ -1,3 +1,5 @@
+<!-- log in page -->
+
 <?php include('server.php'); ?>
 
 <!DOCTYPE html>

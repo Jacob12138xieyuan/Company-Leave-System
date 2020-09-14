@@ -21,6 +21,7 @@ if (empty($_SESSION['username'])) {
         <h1>Employer Leave System</h1>
     </div>
 
+    <!-- welcome session  -->
     <div class="content" style="border-radius: 0px 0px 10px 10px;">
         <?php if (isset($_SESSION['success'])) : ?>
 
@@ -46,7 +47,9 @@ if (empty($_SESSION['username'])) {
             $type = $_SESSION['user_type'];
             if ($type == 'admin') {
                 include('admin_home.php');
-            } else {
+            }
+            //if normal user, get his/her left annual leave
+            else {
                 $query = "SELECT * FROM users WHERE username='{$_SESSION['username']}';";
                 $user = mysqli_query($db, $query);
                 $user = mysqli_fetch_assoc($user);
@@ -66,6 +69,7 @@ if (empty($_SESSION['username'])) {
 
     <?php
     $type = $_SESSION['user_type'];
+    // if normal user, include submit new leave request page
     if ($type == 'normal') {
         include('new_request.php');
     }
