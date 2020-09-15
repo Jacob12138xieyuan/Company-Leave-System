@@ -59,9 +59,9 @@
             <br>
             <br>
             <?php
-            echo "<p>You have taken <strong>" . (15 - $_SESSION['left_days']) . " days</strong> of annual leave! </p>";
+            echo "<p>You have taken <strong>" . (15 - $_SESSION['annual_leave']) . " days</strong> of annual leave! </p>";
             echo "<br>";
-            echo "<p>You have <strong>" . $_SESSION['left_days'] . " days</strong> of annual leave <strong>left</strong>! </p>"
+            echo "<p>You have <strong>" . $_SESSION['annual_leave'] . " days</strong> of annual leave <strong>left</strong>! </p>"
             ?>
 
         <?php endif ?>

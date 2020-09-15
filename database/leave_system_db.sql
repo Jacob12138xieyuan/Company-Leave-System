@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Sep 14, 2020 at 01:00 PM
+-- Generation Time: Sep 15, 2020 at 02:21 PM
 -- Server version: 5.7.24
 -- PHP Version: 7.2.14
 
@@ -68,19 +68,43 @@ CREATE TABLE IF NOT EXISTS `leaves` (
   `days` float DEFAULT NULL,
   `status` varchar(255) DEFAULT 'created',
   `admin_active` tinyint(1) DEFAULT '1',
+  `leave_type` varchar(20) DEFAULT 'annual leave',
   PRIMARY KEY (`leave_id`),
   KEY `id` (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=80 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=81 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `leaves`
 --
 
-INSERT INTO `leaves` (`leave_id`, `id`, `username`, `start_date`, `end_date`, `note`, `half_begin`, `half_end`, `days`, `status`, `admin_active`) VALUES
-(75, 7, 'user', '2020-09-14', '2020-09-19', '', 0, 0, 5, 'created', 1),
-(79, 8, 'user2', '2020-06-01', '2020-06-08', '', 1, 1, 5, 'created', 1),
-(78, 7, 'user', '2020-05-01', '2020-05-10', '', 0, 0, 4, 'cancelled', 0),
-(77, 7, 'user', '2020-05-01', '2020-05-10', '', 0, 0, 4, 'approved', 0);
+INSERT INTO `leaves` (`leave_id`, `id`, `username`, `start_date`, `end_date`, `note`, `half_begin`, `half_end`, `days`, `status`, `admin_active`, `leave_type`) VALUES
+(75, 7, 'user', '2020-09-14', '2020-09-19', '', 0, 0, 5, 'created', 1, 'annual leave'),
+(80, 8, 'user2', '2020-09-15', '2020-09-26', '', 0, 0, 8, 'created', 1, 'annual leave'),
+(79, 8, 'user2', '2020-06-01', '2020-06-08', '', 1, 1, 5, 'created', 1, 'annual leave'),
+(78, 7, 'user', '2020-05-01', '2020-05-10', '', 0, 0, 4, 'cancelled', 0, 'annual leave'),
+(77, 7, 'user', '2020-05-01', '2020-05-10', '', 0, 0, 4, 'approved', 0, 'annual leave');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `leave_year`
+--
+
+DROP TABLE IF EXISTS `leave_year`;
+CREATE TABLE IF NOT EXISTS `leave_year` (
+  `year` int(4) NOT NULL,
+  `annual_leave` int(11) NOT NULL DEFAULT '15',
+  `medical_leave` int(11) NOT NULL DEFAULT '18',
+  PRIMARY KEY (`year`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `leave_year`
+--
+
+INSERT INTO `leave_year` (`year`, `annual_leave`, `medical_leave`) VALUES
+(2020, 15, 18),
+(2021, 18, 21);
 
 -- --------------------------------------------------------
 
@@ -95,18 +119,20 @@ CREATE TABLE IF NOT EXISTS `users` (
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   `type` varchar(20) DEFAULT 'normal',
-  `left_days` float DEFAULT '15',
+  `annual_leave` float DEFAULT '15',
+  `medical_leave` float DEFAULT '18',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `email`, `password`, `type`, `left_days`) VALUES
-(6, 'admin', 'xiey0017@ntu.edu.sg', '202cb962ac59075b964b07152d234b70', 'admin', 15),
-(7, 'user', 'xiey0017@gmail.com', '202cb962ac59075b964b07152d234b70', 'normal', 6),
-(8, 'user2', 'xiey@gmail.com', '202cb962ac59075b964b07152d234b70', 'normal', 10);
+INSERT INTO `users` (`id`, `username`, `email`, `password`, `type`, `annual_leave`, `medical_leave`) VALUES
+(6, 'admin', 'xiey0017@ntu.edu.sg', '202cb962ac59075b964b07152d234b70', 'admin', 15, 18),
+(7, 'user', 'xiey0017@gmail.com', '202cb962ac59075b964b07152d234b70', 'normal', 6, 18),
+(8, 'user2', 'xiey@gmail.com', '202cb962ac59075b964b07152d234b70', 'normal', 2, 18),
+(9, 'Jacob12138', 'xiey@ntu.edu.sg', '202cb962ac59075b964b07152d234b70', 'normal', 15, 18);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

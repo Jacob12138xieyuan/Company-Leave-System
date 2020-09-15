@@ -62,7 +62,7 @@
         echo "<table>"; // start a table tag in the HTML
 
         while ($row = mysqli_fetch_array($result)) {   //Creates a loop to loop through results
-            echo "<tr><td>" . $row['id'] . "</td><td>" . $row['username'] . "</td><td>" . $row['email'] . "</td><td>" . $row['left_days'] . "</td></tr>";  //approve and reject botton
+            echo "<tr><td>" . $row['id'] . "</td><td>" . $row['username'] . "</td><td>" . $row['email'] . "</td><td>" . $row['annual_leave'] . "</td></tr>";  //approve and reject botton
         }
 
         echo "</table>"; //Close the table in HTML

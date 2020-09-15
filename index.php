@@ -53,12 +53,12 @@ if (empty($_SESSION['username'])) {
                 $query = "SELECT * FROM users WHERE username='{$_SESSION['username']}';";
                 $user = mysqli_query($db, $query);
                 $user = mysqli_fetch_assoc($user);
-                $left_days = $user['left_days'];
-                $taken_days = 15 - $left_days;
-                $_SESSION['left_days'] = $left_days;
+                $annual_leave = $user['annual_leave'];
+                $taken_days = 15 - $annual_leave;
+                $_SESSION['annual_leave'] = $annual_leave;
                 echo "<p>You have taken <strong>" . $taken_days . " days</strong> of annual leave! </p>";
                 echo "<br>";
-                echo "<p>You have <strong>" . $left_days . " days</strong> of annual leave <strong>left</strong>! </p>";
+                echo "<p>You have <strong>" . $annual_leave . " days</strong> of annual leave <strong>left</strong>! </p>";
                 echo "<br>";
                 echo "<a href='leave_list.php'><button class='btn' style='font-size: 20px'><i class='fa fa-bars'></i> View my leave request </button></a>";
                 echo "<a href='company_calendar.php'><button class='btn' style='font-size: 20px; float: right'><i class='fa fa-calendar'></i> Company Calendar </button></a><br>";

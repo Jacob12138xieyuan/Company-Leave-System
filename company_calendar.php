@@ -79,7 +79,7 @@ $leave_date = date('Y-m-d', time()); //default today
     </form>
     <br>
     <br>
-    <h2 style="text-align: center;">Employees leave on date<?php echo "<strong>" . $leave_date . "</strong>"; ?></h2>
+    <h2 style="text-align: center;">Employees leave on date <?php echo "<strong>" . $leave_date . "</strong>"; ?></h2>
     <table style="margin-top: 25px;">
         <tr>
             <th class="th">Employee Id</th>
@@ -89,25 +89,25 @@ $leave_date = date('Y-m-d', time()); //default today
         </tr>
 
         <?php
-
+        //get all users whose leave period include leave day
         if (isset($leave_date)) {
             $query = "SELECT username FROM leaves WHERE '$leave_date' BETWEEN start_date and end_date;";
             $results = mysqli_query($db, $query);
-            $usernames = mysqli_fetch_assoc($results);
-
+            $usernames = array();
+            while ($row = mysqli_fetch_assoc($results)) {
+                $usernames[] = $row['username'];
+            }
 
             if (isset($usernames)) {
-                $usernames_ = array();
-                foreach ($usernames as $username) {
-                    $usernames_[] = $username;
-                }
-                $query = "SELECT * FROM users WHERE username IN ('" . implode(',', $usernames_) . "')";
+
+                //get users form usernames array
+                $query = "SELECT * FROM users WHERE username IN ( '" . implode("', '", $usernames) . "' )";
                 $results = mysqli_query($db, $query);
 
                 echo "<table>"; // start a table tag in the HTML
 
                 while ($row = mysqli_fetch_array($results)) {   //Creates a loop to loop through results
-                    echo "<tr><td>" . $row['id'] . "</td><td>" . $row['username'] . "</td><td>" . $row['email'] . "</td><td>" . $row['left_days'] . "</td></tr>";  //approve and reject botton
+                    echo "<tr><td>" . $row['id'] . "</td><td>" . $row['username'] . "</td><td>" . $row['email'] . "</td><td>" . $row['annual_leave'] . "</td></tr>";  //approve and reject botton
                 }
 
                 echo "</table>"; //Close the table in HTML

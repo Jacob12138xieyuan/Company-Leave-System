@@ -187,7 +187,7 @@ if (isset($_POST['apply'])) {
         mysqli_query($db, $query);
 
         //substract days from left leave days 
-        $query = "UPDATE users SET left_days=left_days - {$days} WHERE username='{$username}'";
+        $query = "UPDATE users SET annual_leave=annual_leave - {$days} WHERE username='{$username}'";
         mysqli_query($db, $query);
 
         header('location: leave_list.php');
@@ -222,7 +222,7 @@ if (isset($_GET['cancel'])) {
             $query = "SELECT * FROM leaves WHERE leave_id='$leave_id'";
             $results = mysqli_query($db, $query);
             $leave = mysqli_fetch_assoc($results);
-            $query = "UPDATE users SET left_days=left_days + {$leave['days']} WHERE username='{$leave['username']}'";
+            $query = "UPDATE users SET annual_leave=annual_leave + {$leave['days']} WHERE username='{$leave['username']}'";
             mysqli_query($db, $query);
 
             header('location: leave_list.php');
@@ -237,9 +237,9 @@ if (isset($_GET['cancel'])) {
         $query = "SELECT * FROM leaves WHERE leave_id='$leave_id'";
         $results = mysqli_query($db, $query);
         $leave = mysqli_fetch_assoc($results);
-        $query = "UPDATE users SET left_days=left_days + {$leave['days']} WHERE username='{$leave['username']}'";
+        $query = "UPDATE users SET annual_leave=annual_leave + {$leave['days']} WHERE username='{$leave['username']}'";
         mysqli_query($db, $query);
-        $_SESSION['left_days'] += $leave['days'];
+        $_SESSION['annual_leave'] += $leave['days'];
         header('location: leave_list.php');
     } else {
         header('location: leave_list.php');
@@ -265,9 +265,9 @@ if (isset($_GET['approve_cancel'])) {
     $query = "SELECT * FROM leaves WHERE leave_id='$leave_id'";
     $results = mysqli_query($db, $query);
     $leave = mysqli_fetch_assoc($results);
-    $query = "UPDATE users SET left_days=left_days + {$leave['days']} WHERE username='{$leave['username']}'";
+    $query = "UPDATE users SET annual_leave=annual_leave + {$leave['days']} WHERE username='{$leave['username']}'";
     mysqli_query($db, $query);
-    $_SESSION['left_days'] += $leave['days'];
+    $_SESSION['annual_leave'] += $leave['days'];
     header('location: admin_leave_list.php');
 }
 
