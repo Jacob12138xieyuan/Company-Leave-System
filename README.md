@@ -73,9 +73,11 @@ https://www.wampserver.com/en/
 For example: E:\wamp64\www\company-leave-system
 
 ### 3. Import data into 'phpmyadmin' 
-Go to 'http://localhost/phpmyadmin/', username is 'root', password is empty. On the left side create new database name as 'leave_system_db', and import data by selecting 'database/leave_system_db' file in 'company-leave-system' folder. You should see blow:
+Go to 'http://localhost/phpmyadmin/', username is 'root', password is empty. On the left side create new database name as 'leave_system_db'. 
 
 ![2](https://user-images.githubusercontent.com/37478093/93093580-6d451e00-f6d3-11ea-966e-24863a177de6.png)
+
+Import data by selecting 'database/leave_system_db' file in 'company-leave-system' folder. You should see blow:
 ![3](https://user-images.githubusercontent.com/37478093/93093581-6d451e00-f6d3-11ea-8ca0-e630ba1d4b1c.png)
 
 ### 4. Open webpage form http://localhost/
@@ -95,4 +97,6 @@ log in as admin, you should see:
 #### Admin: You can response to all pending leave requests. You can view all employees information. You can add, delete holidays in calendars. You can view who is on leave at specific day.  
 ![6](https://user-images.githubusercontent.com/37478093/93093571-6b7b5a80-f6d3-11ea-8795-b2ba503a7472.png)
 ![7](https://user-images.githubusercontent.com/37478093/93093573-6c13f100-f6d3-11ea-9e37-8d9a2ef5ce73.png)
+
+### If you encounter any problem regarding the code or usage, please contact me at xiey0017@gmail.com
 
